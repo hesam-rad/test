@@ -50,7 +50,7 @@ pipeline {
                 script {
                     echo "Deploy to the K8S ..."
                     withCredentials([string(credentialsId: 'kube-token', variable: 'KUBE_TOKEN')]) {
-                        sh "kubectl config set-cluster k8s --server="env.KUBE_URL" --insecure-skip-tls-verify=true"
+                        sh "kubectl config set-cluster k8s --server="https://168.119.234.58:6443" --insecure-skip-tls-verify=true"
                         sh "kubectl config set-credentials admin --token="$KUBE_TOKEN""
                         sh "kubectl config set-context default --cluster=k8s --user=admin"
                         sh "kubectl config use-context default"
