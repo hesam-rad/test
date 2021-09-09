@@ -53,7 +53,7 @@ pipeline {
                         sh "kubectl config use-context default"
                         sh "envsubst < kubernetes/deployment.yaml | kubectl apply -f -"
                         sh "envsubst < kubernetes/service.yaml | kubectl apply -f -"
-                        sh "kubectl port-forward service/java-maven-app 80:80"
+                        sh "kubectl port-forward service/java-maven-app 8090:80"
                     }
                 }
             }
