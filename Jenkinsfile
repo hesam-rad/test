@@ -8,6 +8,9 @@ pipeline {
     triggers {
         pollSCM('* * * * *')
     }
+    environment {
+        KUBE_URL = "https://168.119.234.58:6443"
+    }
     stages {
         stage('increment version') {
             steps {
@@ -38,6 +41,20 @@ pipeline {
                         sh "docker build -t docker.ehsan.cf/demo-app:${IMAGE_NAME} ."
                         sh "echo $PASS | docker login docker.ehsan.cf -u $USER --password-stdin"
                         sh "docker push docker.ehsan.cf/demo-app:${IMAGE_NAME}"
+                    }
+                }
+            }
+        }
+        stage('Deploy k8s') {
+            steps {
+                script {
+                    echo "Deploy to the K8S ..."
+                    withCredentials([string(credentialsId: 'kube-token', variable: 'KUBE_TOKEN')]) {
+                        sh "kubectl config set-cluster k8s --server="${KUBE_URL}" --insecure-skip-tls-verify=true"
+                        sh "kubectl config set-credentials admin --token="$KUBE_TOKEN""
+                        sh "kubectl config set-context default --cluster=k8s --user=admin"
+                        sh "kubectl config use-context default"
+                        sh "kubectl get pods -A"
                     }
                 }
             }
