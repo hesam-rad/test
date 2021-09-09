@@ -52,6 +52,8 @@ pipeline {
                         sh "kubectl config set-context default --cluster=k8s --user=admin"
                         sh "kubectl config use-context default"
                         sh "envsubst < kubernetes/deployment.yaml | kubectl apply -f -"
+                        sh "envsubst < kubernetes/service.yaml | kubectl apply -f -"
+                        sh "kubectl port-forward service/java-maven-app 80:80"
                     }
                 }
             }
