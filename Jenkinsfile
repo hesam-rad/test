@@ -51,7 +51,7 @@ pipeline {
                         sh "kubectl config set-credentials admin --token='${KUBE_TOKEN}'"
                         sh "kubectl config set-context default --cluster=k8s --user=admin"
                         sh "kubectl config use-context default"
-                        sh "kubectl get pods -A"
+                        sh "envsubst < kubernetes/deployment.yaml | kubectl apply -f "
                     }
                 }
             }
