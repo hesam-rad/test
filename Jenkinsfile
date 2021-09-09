@@ -3,7 +3,7 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven'
+        maven 'maven'
     }
     triggers {
         pollSCM('* * * * *')
@@ -34,10 +34,10 @@ pipeline {
             steps {
                 script {
                     echo "building the docker image..."
-                    withCredentials([usernamePassword(credentialsId: 'nexus-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        sh "docker build -t nexus.maranet.tk:5000/demo-app:${IMAGE_NAME} ."
-                        sh "echo $PASS | docker login nexus.maranet.tk:5000 -u $USER --password-stdin"
-                        sh "docker push nexus.maranet.tk:5000/demo-app:${IMAGE_NAME}"
+                    withCredentials([usernamePassword(credentialsId: 'docker-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
+                        sh "docker build -t docker.ehsan.cf/demo-app:${IMAGE_NAME} ."
+                        sh "echo $PASS | docker login docker.ehsan.cf -u $USER --password-stdin"
+                        sh "docker push docker.ehsan.cf/demo-app:${IMAGE_NAME}"
                     }
                 }
             }
@@ -46,12 +46,12 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'github-repo', passwordVariable: 'PASS', usernameVariable: 'USER')]) {
-                        sh 'git config --global user.email "ehsanhedayatpour@gmail.com"'
-                        sh 'git config --global user.name "ehsanhedayatpour"'
-                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/ehsanhedayatpour/java-maven-app.git"
+                        sh 'git config --global user.email "admin@gmail.com"'
+                        sh 'git config --global user.name "admin"'
+                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/hesam-rad/test.git/"
                         sh 'git add .'
                         sh 'git commit -m "ci: version bump"'
-                        sh 'git push origin HEAD:master'
+                        sh 'git push origin HEAD:main'
                     }
                 }
             }
